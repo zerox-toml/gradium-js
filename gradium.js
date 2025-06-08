@@ -141,4 +141,53 @@ export class Gradium {
             });
         });
     }
+
+    async fetchBlockInfo(hash) {
+        // Convert string hash to hash object if needed
+        const blockHash = typeof hash === 'string' ? this.api.createType('Hash', hash) : hash;
+        
+        const block = await this.fetchBlock(blockHash);
+        const header = await this.fetchHeader(blockHash);
+        
+        // Get extrinsics (transactions) info
+        const extrinsics = block.block.extrinsics.map((extrinsic, index) => ({
+            index,
+            method: extrinsic.method.method,
+            section: extrinsic.method.section,
+            signer: extrinsic.signer?.toString(),
+            nonce: extrinsic.nonce?.toNumber(),
+            isSigned: extrinsic.isSigned,
+            tip: extrinsic.tip?.toNumber()
+        }));
+
+        // Get events for this block
+        const events = await this.api.query.system.events.at(blockHash);
+        const decodedEvents = events.map((event, index) => ({
+            index,
+            phase: event.phase.toString(),
+            section: event.event.section,
+            method: event.event.method,
+            data: event.event.data.toHuman()
+        }));
+
+        // Find timestamp from extrinsics
+        let timestamp = null;
+        for (const ext of block.block.extrinsics) {
+            if (ext.method.section === 'timestamp' && ext.method.method === 'set') {
+                timestamp = ext.args[0].toNumber();
+                break;
+            }
+        }
+
+        return {
+            hash: blockHash.toHex(),
+            number: header.number.toNumber(),
+            parentHash: header.parentHash.toHex(),
+            stateRoot: header.stateRoot.toHex(),
+            extrinsicsRoot: header.extrinsicsRoot.toHex(),
+            timestamp,
+            extrinsics,
+            events: decodedEvents
+        };
+    }
 }
