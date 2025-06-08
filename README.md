@@ -1,25 +1,32 @@
 # Gradium.js
 
-A powerful JavaScript library for interacting with Polkadot-based blockchains, providing seamless access to blockchain data and GRANDPA consensus operations.
+A backend JavaScript project for interacting with Polkadot-based blockchains, providing functionality for fetching blockchain data and handling GRANDPA consensus operations.
 
-## Features
+## Overview
 
-- 🔗 Connect to any Polkadot-based blockchain
-- 📦 Fetch blocks, headers, and finalized heads
-- 🔐 GRANDPA consensus operations
-- 🔑 Transaction signing and submission
-- 🛠️ Easy-to-use API
+This project provides a set of utilities for:
+- Connecting to Polkadot-based blockchains
+- Fetching blocks, headers, and finalized heads
+- Working with GRANDPA consensus
+- Transaction handling
 
-## Installation
+## Setup
 
+1. Clone the repository:
 ```bash
-npm install gradium-js
+git clone https://github.com/zerox-toml/gradium-js.git
+cd gradium-js
 ```
 
-## Quick Start
+2. Install dependencies:
+```bash
+npm install
+```
+
+## Usage
 
 ```javascript
-import { Gradium } from 'gradium-js';
+import { Gradium } from './gradium.js';
 
 // Initialize connection
 const gradium = new Gradium('wss://your-node-url');
@@ -30,10 +37,9 @@ const finalizedHead = await gradium.fetchFinalizedHead();
 const block = await gradium.fetchBlock(finalizedHead);
 ```
 
-## API Reference
+## Available Methods
 
 ### Constructor
-
 ```javascript
 const gradium = new Gradium(wsUrl: string)
 ```
@@ -67,7 +73,7 @@ Computes SHA3-256 hash of the provided data.
 #### `sendTestTransaction(seedPhrase: string)`
 Sends a test transaction using the provided seed phrase.
 
-## Examples
+## Example Usage
 
 ### Fetching Block Information
 
@@ -96,9 +102,14 @@ const authorities = await gradium.fetchAuthorities(finalizedHead);
 console.log('Current authorities:', authorities);
 ```
 
-## Contributing
+## Development
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+To run the project locally:
+
+1. Make sure you have Node.js installed
+2. Install dependencies with `npm install`
+3. Configure your blockchain node URL in the configuration
+4. Run the project using `node index.js`
 
 ## License
 
