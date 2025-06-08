@@ -1,116 +1,101 @@
-# Gradium.js
+# js-gradium
 
-A backend JavaScript project for interacting with Polkadot-based blockchains, providing functionality for fetching blockchain data and handling GRANDPA consensus operations.
+A JavaScript library for interacting with the Gradium blockchain.
 
-## Overview
+## Installation
 
-This project provides a set of utilities for:
-- Connecting to Polkadot-based blockchains
-- Fetching blocks, headers, and finalized heads
-- Working with GRANDPA consensus
+```bash
+npm install js-gradium
+```
+
+## Features
+
+- Connect to Gradium blockchain nodes
+- Fetch block information and headers
+- Query blockchain state
+- SHA3 hashing utilities
+- GRANDPA consensus information
 - Transaction handling
-
-## Setup
-
-1. Clone the repository:
-```bash
-git clone https://github.com/zerox-toml/gradium-js.git
-cd gradium-js
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
 
 ## Usage
 
 ```javascript
-import { Gradium } from './gradium.js';
+import { Gradium } from 'js-gradium';
 
-// Initialize connection
-const gradium = new Gradium('wss://your-node-url');
-await gradium.init();
+// Initialize the client
+const client = new Gradium('ws://localhost:9944');
 
-// Fetch latest finalized block
-const finalizedHead = await gradium.fetchFinalizedHead();
-const block = await gradium.fetchBlock(finalizedHead);
+// Connect to the network
+await client.init();
+
+// Get latest finalized block
+const finalizedHead = await client.fetchFinalizedHead();
+console.log('Latest block hash:', finalizedHead.toHex());
+
+// Get block information
+const blockInfo = await client.fetchBlockInfo(finalizedHead);
+console.log('Block number:', blockInfo.number);
+
+// Test SHA3 hashing
+const hash = client.hashSha3('Hello, Gradium!');
 ```
 
-## Available Methods
+## API Reference
 
 ### Constructor
 ```javascript
-const gradium = new Gradium(wsUrl: string)
+const client = new Gradium(wsUrl: string)
 ```
+- `wsUrl`: WebSocket URL of the Gradium node
 
 ### Methods
 
 #### `init()`
-Initializes the connection to the blockchain node.
+Connects to the blockchain node.
 
 #### `fetchFinalizedHead()`
-Returns the hash of the latest finalized block.
+Returns the latest finalized block hash.
 
-#### `fetchHeader(hash: string)`
-Fetches the header for a specific block hash.
+#### `fetchHeader(hash)`
+Fetches block header information.
 
-#### `fetchBlockHash(number: number)`
-Retrieves the block hash for a given block number.
+#### `fetchBlockHash(number)`
+Gets block hash by block number.
 
-#### `fetchBlock(hash: string)`
-Fetches the complete block data for a given hash.
+#### `fetchBlock(hash)`
+Retrieves raw block data.
 
-#### `fetchCurrentSetId(atHash: string)`
-Retrieves the current GRANDPA set ID at a specific block.
+#### `fetchCurrentSetId(atHash)`
+Gets current GRANDPA set ID.
 
-#### `fetchAuthorities(atHash: string)`
-Fetches the current GRANDPA authorities at a specific block.
+#### `fetchAuthorities(atHash)`
+Retrieves GRANDPA authorities.
 
-#### `hashSha3(data: string)`
-Computes SHA3-256 hash of the provided data.
+#### `hashSha3(data)`
+Computes SHA3 hash of input data.
 
-#### `sendTestTransaction(seedPhrase: string)`
-Sends a test transaction using the provided seed phrase.
-
-## Example Usage
-
-### Fetching Block Information
-
-```javascript
-const gradium = new Gradium('wss://your-node-url');
-await gradium.init();
-
-// Get latest block
-const finalizedHead = await gradium.fetchFinalizedHead();
-const header = await gradium.fetchHeader(finalizedHead);
-console.log('Latest block number:', header.number.toNumber());
-```
-
-### Working with GRANDPA Consensus
-
-```javascript
-const gradium = new Gradium('wss://your-node-url');
-await gradium.init();
-
-// Get current set ID
-const setId = await gradium.fetchCurrentSetId(finalizedHead);
-console.log('Current set ID:', setId);
-
-// Get authorities
-const authorities = await gradium.fetchAuthorities(finalizedHead);
-console.log('Current authorities:', authorities);
-```
+#### `fetchBlockInfo(hash)`
+Gets detailed block information including:
+- Block number
+- Hash
+- Parent hash
+- Timestamp
+- Extrinsics
+- Events
 
 ## Development
 
-To run the project locally:
+```bash
+# Install dependencies
+npm install
 
-1. Make sure you have Node.js installed
-2. Install dependencies with `npm install`
-3. Configure your blockchain node URL in the configuration
-4. Run the project using `node index.js`
+# Build the library
+npm run build
+
+# Run tests
+npm test
+```
 
 ## License
 
-MIT License - see the [LICENSE](LICENSE) file for details. 
+MIT 
